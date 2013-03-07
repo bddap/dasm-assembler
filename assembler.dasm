@@ -1,0 +1,44 @@
+:pre
+	set a,0
+	set b,1
+	set c,2
+    set pc,temp
+:identifyOpcode
+	add a,3
+    add b,3
+    add c,3
+    :temp
+	set x,0
+    set y,1
+    set z,2
+    set i,0
+    
+:identifyOpcodeLoop
+    ife [input+a],[index+x]
+		ife [input+b],[index+y]
+    		ife [input+c],[index+z] 
+    			set pc,findPointer
+	add x,3	;\
+    add y,3	; increments through possible opcodes
+    add z,3	;/
+    add i,2	;indicates correct pointer later
+    set pc,identifyOpcodeLoop
+    
+:index dat "setaddsub"
+:findPointer
+	add pc,i;I feel clever
+:pointers
+set pc,set	;Each of these instructions is two words
+set pc,add	;long. That is why we increment i 2 during
+set pc,sub	;the identifyOpcodeLoop
+
+:input dat "setsubadd"
+:set
+	set j,1
+	set pc,identifyOpcode
+:add
+	set j,2
+	set pc,identifyOpcode
+:sub
+	set j,3
+	set pc,identifyOpcode
