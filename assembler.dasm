@@ -19,18 +19,19 @@
     		ife [input+c],[index+z] 
     			set pc,findPointer
 	add x,3	;\
-    add y,3	; increments through possible opcodes
+    add y,3	; increments through each possible opcode
     add z,3	;/
     add i,2	;indicates correct pointer later
     set pc,identifyOpcodeLoop
     
-:index dat "setaddsub"
+:index dat "setaddsubmuldivdvimodmdiandborxorshlifbifcifeifnifgifaiflifu------adxsbx------stistdn/ajsr------------------intiagiasrfiiaq---------hwnhwqhwi---------------------------------------"
 :findPointer
 	add pc,i;I feel clever
 :pointers
 set pc,set	;Each of these instructions is two words
 set pc,add	;long. That is why we increment i 2 during
 set pc,sub	;the identifyOpcodeLoop
+set pc,
 
 :input dat "setsubadd"
 :set
@@ -42,3 +43,61 @@ set pc,sub	;the identifyOpcodeLoop
 :sub
 	set j,3
 	set pc,identifyOpcode
+:mul
+:mli
+:div
+:dvi
+:mod
+:mdi
+:and
+:bor
+:xor
+:shr
+:asr
+:shl
+:ifb
+:ifc
+:ife
+:ifn
+:ifg
+:ifa
+:ifl
+:ifu
+:---
+:---
+:adx
+:sbx
+:sti
+:std
+:n/a
+:jsr
+:---
+:---
+:---
+:---
+:---
+:---
+:int
+:iag
+:ias
+:rfi
+:iaq
+:---
+:---
+:---
+:hwn
+:hwq
+:hwi
+:---
+:---
+:---
+:---
+:---
+:---
+:---
+:---
+:---
+:---
+:---
+:---
+:---
