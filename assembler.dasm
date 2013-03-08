@@ -3,6 +3,7 @@
 	set b,1
 	set c,2
     set pc,temp
+    
 :identifyOpcode
 	add a,3
     add b,3
@@ -17,87 +18,35 @@
     ife [input+a],[index+x]
 		ife [input+b],[index+y]
     		ife [input+c],[index+z] 
-    			set pc,findPointer
+    			set pc,basicOrSpecial
 	add x,3	;\
     add y,3	; increments through each possible opcode
     add z,3	;/
-    add i,2	;indicates correct pointer later
+    add i,1	;indicates correct pointer later
+    ifg i,0x3e
+    	set pc,noSuchOpcode
     set pc,identifyOpcodeLoop
     
 :index dat "setaddsubmuldivdvimodmdiandborxorshlifbifcifeifnifgifaiflifu------adxsbx------stistdn/ajsr------------------intiagiasrfiiaq---------hwnhwqhwi---------------------------------------"
-:findPointer
-	add pc,i;I feel clever
-:pointers
-set pc,set	;Each of these instructions is two words
-set pc,add	;long. That is why we increment i 2 during
-set pc,sub	;the identifyOpcodeLoop
-set pc,
 
 :input dat "setsubadd"
-:set
-	set j,1
-	set pc,identifyOpcode
-:add
-	set j,2
-	set pc,identifyOpcode
-:sub
-	set j,3
-	set pc,identifyOpcode
-:mul
-:mli
-:div
-:dvi
-:mod
-:mdi
-:and
-:bor
-:xor
-:shr
-:asr
-:shl
-:ifb
-:ifc
-:ife
-:ifn
-:ifg
-:ifa
-:ifl
-:ifu
-:---
-:---
-:adx
-:sbx
-:sti
-:std
-:n/a
-:jsr
-:---
-:---
-:---
-:---
-:---
-:---
-:int
-:iag
-:ias
-:rfi
-:iaq
-:---
-:---
-:---
-:hwn
-:hwq
-:hwi
-:---
-:---
-:---
-:---
-:---
-:---
-:---
-:---
-:---
-:---
-:---
-:---
-:---
+
+:basicOrSpecial
+	ifl i,0x20
+		set pc,basicOpcode
+    set pc,specialOpcode
+
+:basicOpcode
+	set [j],i	;j = next instruction location
+    add a,3
+    set pc,identifyB
+    
+:specialOpcode
+	shl i,5
+    set [j],i
+    add a,3
+    set pc,identifyA
+    
+:noSuchOpcode
+:identifyB
+:identifyA
