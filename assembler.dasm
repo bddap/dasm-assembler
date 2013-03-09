@@ -1,9 +1,17 @@
 ;inputs are a,b
 ;a = start location of input word
 ;b = start location of index
-;outputs are i,x,b
-;i = location of input's match in index
-;x = 
+;output is i
+;i = location of input's match in the index
+
+set a,input
+set b,index
+jsr searchIndex
+sub pc,1
+
+:searchIndex
+set x,a
+set pc,compareChar
 
 :nextIndexChar
 	add b,1
@@ -11,30 +19,32 @@
 	ifn [b],0x2c	;comma
     	set pc,nextIndexChar
     add i,1
-:findValue
-    set x,a
+    set x,a	;resets x start of word
+    sub x,1	;compensates for next line
 :compareNextChar
 	add x,1
-    add b,1
+    add b,1	;multi purpose
 :compareChar
 	set c,[x]	;for optimization
+    ifn c,[b]	;bug here when [b] not comma
+    	set pc,compareNextIndex
 	ifn c,0x2c	;comma
 		ifn c,0x11	;return
     		ifn c,0x20	;space
        			ifn c,0x5d	;"]"
            			ifn c,0x2b	;"+"
-                   		set pc,is[b]comma
-ife c,[b]
-	set pc,compareNextChar	
+                   		set pc,compareNextChar
 
 :is[b]comma
-	ife [b],0x2c	;comma
-    	set pc,wordMatchFound
-    set pc,compareNextIndex
-    
-:wordMatchFound
+	ifn [b],0x2c	;comma
+	    set pc,compareNextIndex
 	set pc,pop
 	
-
-:input dat "word"	;x
+:comparec[b]
+	ife c,[b]
+		set pc,compareNextChar
+    set pc,compareNextIndex
+	
+    
+:input dat "word "	;x
 :index dat "test,key,word,system"	;b
