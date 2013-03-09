@@ -1,77 +1,40 @@
-:assemblerInput
-	set a,input	;the takes the beginning of the assembly instruction as input a, and sets the binary instruction starting at j. 
+;inputs are a,b
+;a = start location of input word
+;b = start location of index
+;outputs are i,x,b
+;i = location of input's match in index
+;x = 
+
+:nextIndexChar
+	add b,1
+:compareNextIndex
+	ifn [b],0x2c	;comma
+    	set pc,nextIndexChar
+    add i,1
+:findValue
+    set x,a
+:compareNextChar
+	add x,1
+    add b,1
+:compareChar
+	set c,[x]	;for optimization
+	ifn c,0x2c	;comma
+		ifn c,0x11	;return
+    		ifn c,0x20	;space
+       			ifn c,0x5d	;"]"
+           			ifn c,0x2b	;"+"
+                   		set pc,is[b]comma
+ife c,[b]
+	set pc,compareNextChar	
+
+:is[b]comma
+	ife [b],0x2c	;comma
+    	set pc,wordMatchFound
+    set pc,compareNextIndex
     
-:identifyOpcode
-	set b,a		;\
-    set c,b		; a,b,c are our input pointers
-    add b,1		; /
-    add c,2		;/
-	set x,index	;\
-    set y,x		; \
-    set z,y		;  x,y,z are now our index pointers.
-    add y,1		; /
-    add z,2		;/
-    set i,0
-    
-:identifyOpcodeLoop
-    ife [a],[x]
-		ife [b],[y]
-    		ife [c],[z] 
-    			set pc,opcodeFound
-	add x,3	;\
-    add y,3	; increments through each possible opcode
-    add z,3	;/
-    add i,1	;indicates correct pointer later
-    ifg i,0x3e
-    	set pc,noSuchOpcode
-    set pc,identifyOpcodeLoop
-    
-:index dat "setaddsubmuldivdvimodmdiandborxorshlifbifcifeifnifgifaiflifu------adxsbx------stistdn/ajsr------------------intiagiasrfiiaq---------hwnhwqhwi---------------------------------------"
+:wordMatchFound
+	set pc,pop
+	
 
-:input dat "set a,b ubadd"
-
-:opcodeFound
-	ifl i,0x20
-		set pc,basicOpcode
-    set pc,specialOpcode
-
-:specialOpcode
-	set y,5		;y is now out shl total.
-	shl i,y
-
-:basicOpcode
-	set [j],i	;j is one of the inputs to the assembler
-    set pc,identifyValue
-    
-:noSuchOpcode
-
-:identifyValue
-	add a,2
-
-;if [a] is 0x0 or a space, it is ignored
-    :ignore
-    	add a,1
-    	set b,[a]	;we will be using b often
-		ife b,0x0
-    		set pc,ignore
-		ife b,0x20
-    		set pc,ignore
-            
-;now we check to set if [a] is a register
-	;method 1--brute
-	ifn b,0x61	;"a"
-    	ifn b,0x62	;"b"
-        	ifn b,0x63	;"c"
-        		ifn b,0x78	;"x"
-        			ifn b,0x79	;"y"
-        				ifn b,0x7a	;"z"
-        					ifn b,0x69	;"i"
-                            	ifn b,0x6e	;"j"
-                                	set pc,foundRegister
-                                    
-	;method 2--index
-    ;separate each kind of value with a comma?
-    :
-    :valueIndex dat "a,b,c,x,y,z,i,j,"
-
-:foundRegister
+:input dat "word"	;x
+:index dat "test,key,word,system"	;b
